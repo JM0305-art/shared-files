@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Disney Ticket Guide — 南野さんへ</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0d1b2a;
+    --navy-mid: #162236;
+    --navy-light: #1e3250;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --gold-pale: #f5e9c8;
+    --cream: #faf7f0;
+    --cream-dark: #f0ead8;
+    --white: #ffffff;
+    --text-body: #3a3228;
+    --text-muted: #7a6e60;
+    --step-1: #1a3a5c;
+    --step-2: #0f2d4a;
+    --step-3: #162a40;
+  }
+
+  body {
+    background: var(--cream);
+    color: var(--text-body);
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Stars background ── */
+  .stars-bg {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .star {
+    position: absolute;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: twinkle var(--d, 3s) ease-in-out infinite var(--delay, 0s);
+    opacity: 0;
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0; transform: scale(0.5); }
+    50% { opacity: var(--op, 0.6); transform: scale(1); }
+  }
+
+  /* ── Main wrapper ── */
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 60px 32px 80px;
+  }
+
+  /* ── Header ── */
+  .header {
+    text-align: center;
+    margin-bottom: 64px;
+    animation: fadeUp 1s ease both;
+  }
+  .header-eyebrow {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: 14px;
+    letter-spacing: 0.25em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+  .header-eyebrow::before,
+  .header-eyebrow::after {
+    content: '';
+    display: block;
+    width: 48px;
+    height: 0.5px;
+    background: var(--gold);
+    opacity: 0.6;
+  }
+  .header-castle {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 20px;
+    opacity: 0.85;
+  }
+  .header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: clamp(28px, 5vw, 42px);
+    color: var(--navy);
+    line-height: 1.25;
+    letter-spacing: 0.04em;
+    margin-bottom: 14px;
+  }
+  .header h1 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+  .header-subtitle {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+  .validity-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--navy);
+    color: var(--gold-pale);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    padding: 7px 20px;
+    border-radius: 40px;
+    margin-top: 10px;
+  }
+  .validity-badge .dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--gold);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.7); }
+  }
+
+  /* ── Divider ── */
+  .gold-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 0 auto 56px;
+    max-width: 320px;
+  }
+  .gold-divider .line {
+    flex: 1;
+    height: 0.5px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    opacity: 0.5;
+  }
+  .gold-divider .diamond {
+    width: 6px;
+    height: 6px;
+    background: var(--gold);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
+
+  /* ── Steps ── */
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .step-card {
+    background: var(--white);
+    border: 0.5px solid rgba(201, 168, 76, 0.25);
+    border-radius: 16px;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 88px 1fr;
+    animation: fadeUp 0.8s ease both;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+  }
+  .step-card:hover {
+    box-shadow: 0 12px 40px rgba(13, 27, 42, 0.1), 0 0 0 0.5px rgba(201, 168, 76, 0.4);
+    transform: translateY(-2px);
+  }
+  .step-card:nth-child(1) { animation-delay: 0.2s; }
+  .step-card:nth-child(2) { animation-delay: 0.35s; }
+  .step-card:nth-child(3) { animation-delay: 0.5s; }
+
+  .step-left {
+    background: var(--navy);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 28px 16px;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+  .step-left::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    right: -20px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(201, 168, 76, 0.08);
+  }
+  .step-num-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: rgba(201, 168, 76, 0.6);
+    text-transform: uppercase;
+  }
+  .step-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 48px;
+    color: var(--gold-light);
+    line-height: 1;
+  }
+  .step-icon {
+    font-size: 18px;
+    margin-top: 4px;
+  }
+
+  .step-right {
+    padding: 28px 28px 28px 24px;
+  }
+  .step-tag {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 0.5px solid rgba(201, 168, 76, 0.4);
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+  }
+  .step-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 20px;
+    color: var(--navy);
+    letter-spacing: 0.02em;
+    margin-bottom: 10px;
+    line-height: 1.3;
+  }
+  .step-body {
+    font-size: 13.5px;
+    line-height: 1.8;
+    color: var(--text-body);
+    font-weight: 300;
+  }
+  .step-body strong {
+    color: var(--navy);
+    font-weight: 500;
+  }
+
+  /* info box */
+  .info-box {
+    margin-top: 14px;
+    background: var(--cream);
+    border-left: 2px solid var(--gold);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    font-size: 12.5px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+  .info-box .info-label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+
+  /* ── Timeline connector ── */
+  .step-connector {
+    display: flex;
+    justify-content: flex-start;
+    padding-left: 44px;
+    margin: -6px 0;
+  }
+  .connector-line {
+    width: 0.5px;
+    height: 28px;
+    background: linear-gradient(to bottom, rgba(201, 168, 76, 0.3), rgba(201, 168, 76, 0.1));
+  }
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: 64px;
+    text-align: center;
+    animation: fadeUp 1s ease 0.7s both;
+  }
+  .footer-message {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--navy);
+    margin-bottom: 6px;
+    opacity: 0.8;
+  }
+  .footer-from {
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+  .footer-magic {
+    margin-top: 24px;
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: rgba(201, 168, 76, 0.5);
+    text-transform: uppercase;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 520px) {
+    .step-card { grid-template-columns: 72px 1fr; }
+    .step-num { font-size: 38px; }
+    .step-right { padding: 20px 18px 20px 16px; }
+    .page { padding: 40px 20px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Stars background -->
+<div class="stars-bg" id="stars"></div>
+
+<div class="page">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-eyebrow">A Gift of Magic</div>
+
+    <!-- Castle SVG -->
+    <svg class="header-castle" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Towers -->
+      <rect x="8" y="28" width="10" height="32" fill="#0d1b2a" rx="1"/>
+      <rect x="54" y="28" width="10" height="32" fill="#0d1b2a" rx="1"/>
+      <rect x="31" y="10" width="10" height="50" fill="#162236" rx="1"/>
+      <!-- Side spires -->
+      <polygon points="8,28 13,14 18,28" fill="#c9a84c"/>
+      <polygon points="54,28 59,14 64,28" fill="#c9a84c"/>
+      <!-- Center spire -->
+      <polygon points="31,10 36,0 41,10" fill="#c9a84c"/>
+      <!-- Small side towers -->
+      <rect x="20" y="36" width="8" height="24" fill="#1e3250" rx="1"/>
+      <rect x="44" y="36" width="8" height="24" fill="#1e3250" rx="1"/>
+      <polygon points="20,36 24,26 28,36" fill="#e8c97a"/>
+      <polygon points="44,36 48,26 52,36" fill="#e8c97a"/>
+      <!-- Gate -->
+      <path d="M32 60 Q36 54 40 60 L40 72 L32 72 Z" fill="#0d1b2a"/>
+      <!-- Windows -->
+      <rect x="10" y="38" width="6" height="7" rx="3" fill="#c9a84c" opacity="0.5"/>
+      <rect x="56" y="38" width="6" height="7" rx="3" fill="#c9a84c" opacity="0.5"/>
+      <rect x="33" y="22" width="6" height="7" rx="3" fill="#c9a84c" opacity="0.7"/>
+      <!-- Stars -->
+      <circle cx="5" cy="10" r="1.5" fill="#c9a84c" opacity="0.7"/>
+      <circle cx="67" cy="6" r="1" fill="#c9a84c" opacity="0.6"/>
+      <circle cx="36" cy="4" r="0" fill="#c9a84c"/>
+    </svg>
+
+    <h1>南野さんへ、<br><em>Disneyland</em> のご案内</h1>
+    <p class="header-subtitle">増田より、ウェルカムギフト · ペアチケット</p>
+    <div class="validity-badge">
+      <span class="dot"></span>
+      有効期限 2027年4月5日まで
+    </div>
+  </header>
+
+  <!-- Divider -->
+  <div class="gold-divider">
+    <div class="line"></div>
+    <div class="diamond"></div>
+    <div class="line"></div>
+  </div>
+
+  <!-- Steps -->
+  <div class="steps">
+
+    <!-- Step 1 -->
+    <div class="step-card">
+      <div class="step-left">
+        <span class="step-num-label">Step</span>
+        <span class="step-num">1</span>
+        <div class="step-icon">📅</div>
+      </div>
+      <div class="step-right">
+        <span class="step-tag">希望日を伝える</span>
+        <h2 class="step-title">行きたい日時を<br>増田に連絡</h2>
+        <p class="step-body">
+          Disneylandに行きたい日が決まったら、<strong>入園予定日の2週間前まで</strong>に増田へ希望日を連絡してください。
+        </p>
+        <div class="info-box">
+          <div class="info-label">有効期限について</div>
+          入園は <strong>2027年4月5日</strong> まで有効。お早めにご計画ください。
+        </div>
+      </div>
+    </div>
+
+    <!-- Connector -->
+    <div class="step-connector"><div class="connector-line"></div></div>
+
+    <!-- Step 2 -->
+    <div class="step-card">
+      <div class="step-left">
+        <span class="step-num-label">Step</span>
+        <span class="step-num">2</span>
+        <div class="step-icon">🎫</div>
+      </div>
+      <div class="step-right">
+        <span class="step-tag">QRコードを受け取る</span>
+        <h2 class="step-title">チケットQRコードを<br>受け取り、アクティベート</h2>
+        <p class="step-body">
+          入園日が確定したら、増田からチケットのQRコードをお送りします。受け取ったら<strong>東京ディズニーリゾート公式アプリ</strong>でアクティベートしてください。
+        </p>
+        <div class="info-box">
+          <div class="info-label">3ヶ月以上先の場合</div>
+          入園日が3ヶ月以上先になる場合は、<strong>入園の2ヶ月前</strong>に増田からQRコードをお送りします。
+        </div>
+      </div>
+    </div>
+
+    <!-- Connector -->
+    <div class="step-connector"><div class="connector-line"></div></div>
+
+    <!-- Step 3 -->
+    <div class="step-card">
+      <div class="step-left">
+        <span class="step-num-label">Step</span>
+        <span class="step-num">3</span>
+        <div class="step-icon">✨</div>
+      </div>
+      <div class="step-right">
+        <span class="step-tag">いよいよ入園</span>
+        <h2 class="step-title">アプリで<br>スムーズに入園</h2>
+        <p class="step-body">
+          当日は<strong>東京ディズニーリゾート公式アプリ</strong>を起動し、QRコードをゲートにかざして入園。夢の時間をお楽しみください。
+        </p>
+        <div class="info-box">
+          <div class="info-label">アプリのご準備</div>
+          事前にアプリをダウンロードし、ディズニーアカウントへのログインをお忘れなく。
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="gold-divider" style="margin: 48px auto 32px;">
+      <div class="line"></div>
+      <div class="diamond"></div>
+      <div class="line"></div>
+    </div>
+    <p class="footer-message">素敵な思い出になりますように。</p>
+    <p class="footer-from">From 増田 · With Love</p>
+    <div class="footer-magic">✦ &nbsp; Where dreams come true &nbsp; ✦</div>
+  </footer>
+
+</div>
+
+<script>
+  // Generate twinkling stars
+  const starsEl = document.getElementById('stars');
+  const count = 55;
+  for (let i = 0; i < count; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2.5 + 1;
+    s.style.cssText = `
+      left: ${Math.random() * 100}%;
+      top: ${Math.random() * 100}%;
+      width: ${size}px;
+      height: ${size}px;
+      --d: ${Math.random() * 4 + 2}s;
+      --delay: ${Math.random() * 6}s;
+      --op: ${Math.random() * 0.4 + 0.2};
+    `;
+    starsEl.appendChild(s);
+  }
+</script>
+</body>
+</html>
